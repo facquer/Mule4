@@ -8,11 +8,15 @@ package luffy.beans;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -41,9 +45,45 @@ public class CtrLuffy {
     private String urlDescarga;
     private String usuario;
     private String pass;
+    private boolean login = false;
 
-    public CtrLuffy() {
+    public CtrLuffy() throws IOException {
+    }
 
+    public void login() {
+        RequestContext req = RequestContext.getCurrentInstance();
+        try {
+            StringBuilder resultado2 = new StringBuilder();
+            URL url2 = new URL("http://localhost:8081/login/" + this.usuario + "/" + this.pass);
+
+            HttpURLConnection conexion2 = (HttpURLConnection) url2.openConnection();
+            conexion2.setRequestMethod("GET");
+
+            BufferedReader rd2 = new BufferedReader(new InputStreamReader(conexion2.getInputStream()));
+            String linea2;
+
+            while ((linea2 = rd2.readLine()) != null) {
+                resultado2.append(linea2);
+            }
+
+            rd2.close();
+            String resul = resultado2.toString();
+            if (resul.equals("1")) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                this.login = true;
+                context.getExternalContext().redirect("luffyMusic.jsf");
+                FacesMessage facesMessage = new FacesMessage("Bienvenid@");
+                context.addMessage(null, facesMessage);
+
+            } else {
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                FacesMessage facesMessage = new FacesMessage("Usuario y/o Contraseña invalidos");
+                facesContext.addMessage(null, facesMessage);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void buscarTop() {
@@ -184,22 +224,18 @@ public class CtrLuffy {
 
             rd3.close();
             String[] lines4 = resultado3.toString().split(":\"");
-   
+
             for (String l : lines4) {
                 if (l.contains("https")) {
                     this.urlDescarga = l.replace("\",\"iframe\"", "");
                 }
             }
-            
+
             System.out.println("URL DESCARGA: " + this.urlDescarga);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    
-    public void login(){
-        
     }
 
     public String getUsuario() {
@@ -217,7 +253,6 @@ public class CtrLuffy {
     public void setPass(String pass) {
         this.pass = pass;
     }
-    
 
     public String getUrlYT() {
         return urlYT;
