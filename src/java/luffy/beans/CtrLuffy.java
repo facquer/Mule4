@@ -14,8 +14,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import luffy.gestion.GestionUsuarioLocal;
+import luffy.modelo.Usuario;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -25,6 +30,11 @@ import org.primefaces.context.RequestContext;
 @ManagedBean
 @ViewScoped
 public class CtrLuffy {
+
+    @Inject
+    private GestionUsuarioLocal gul;
+    private List<Usuario> usuarioList;
+    private Usuario usuarioFinal = new Usuario();
 
     private String urlYT = "https://www.youtube.com/embed/tgbNymZ7vqY";
     private boolean renderizado = false;
@@ -45,6 +55,7 @@ public class CtrLuffy {
     private String urlDescarga;
     private String usuario;
     private String pass;
+    private String correo;
     private boolean login = false;
 
     public CtrLuffy() throws IOException {
@@ -53,33 +64,55 @@ public class CtrLuffy {
     public void login() {
         RequestContext req = RequestContext.getCurrentInstance();
         try {
-            StringBuilder resultado2 = new StringBuilder();
-            URL url2 = new URL("http://localhost:8081/login/" + this.usuario + "/" + this.pass);
-
-            HttpURLConnection conexion2 = (HttpURLConnection) url2.openConnection();
-            conexion2.setRequestMethod("GET");
-
-            BufferedReader rd2 = new BufferedReader(new InputStreamReader(conexion2.getInputStream()));
-            String linea2;
-
-            while ((linea2 = rd2.readLine()) != null) {
-                resultado2.append(linea2);
-            }
-
-            rd2.close();
-            String resul = resultado2.toString();
-            if (resul.equals("1")) {
-                FacesContext context = FacesContext.getCurrentInstance();
-                this.login = true;
-                context.getExternalContext().redirect("luffyMusic.jsf");
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (this.gul.buscarUsuario(usuario, pass).size() > 0 || this.gul.buscarUsuario(usuario, pass) != null) {
+                context.getExternalContext().redirect("funciona.jsf");
                 FacesMessage facesMessage = new FacesMessage("Bienvenid@");
-                context.addMessage(null, facesMessage);
-
-            } else {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-                FacesMessage facesMessage = new FacesMessage("Usuario y/o Contraseña invalidos");
-                facesContext.addMessage(null, facesMessage);
+            }else{
+                FacesMessage facesMessage = new FacesMessage("Usuario y/o Contraseña invalida");
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void volver() {
+        RequestContext req = RequestContext.getCurrentInstance();
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            this.login = true;
+            context.getExternalContext().redirect("login.jsf");
+            FacesMessage facesMessage = new FacesMessage("Bienvenid@");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registrarse() {
+        RequestContext req = RequestContext.getCurrentInstance();
+        this.usuarioFinal = new Usuario();
+        this.usuarioFinal.setUsuario(usuario);
+        this.usuarioFinal.setCorreo(correo);
+        this.usuarioFinal.setContrasenia(pass);
+
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            this.gul.insertUsuario(usuarioFinal);
+            context.getExternalContext().redirect("login.jsf");
+            FacesMessage facesMessage = new FacesMessage("Bienvenid@");
+        } catch (Exception e) {
+            FacesMessage facesMessage = new FacesMessage("Algo salio mal :(");
+        }
+    }
+
+    public void irRegistro() {
+        RequestContext req = RequestContext.getCurrentInstance();
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().redirect("registro.jsf");
+            FacesMessage facesMessage = new FacesMessage("Bienvenid@");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -388,6 +421,46 @@ public class CtrLuffy {
 
     public void setLetra(String letra) {
         this.letra = letra;
+    }
+
+    public GestionUsuarioLocal getGul() {
+        return gul;
+    }
+
+    public void setGul(GestionUsuarioLocal gul) {
+        this.gul = gul;
+    }
+
+    public List<Usuario> getUsuarioList() {
+        return usuarioList;
+    }
+
+    public void setUsuarioList(List<Usuario> usuarioList) {
+        this.usuarioList = usuarioList;
+    }
+
+    public Usuario getUsuarioFinal() {
+        return usuarioFinal;
+    }
+
+    public void setUsuarioFinal(Usuario usuarioFinal) {
+        this.usuarioFinal = usuarioFinal;
+    }
+
+    public boolean isLogin() {
+        return login;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
 }

@@ -20,20 +20,10 @@
 
                     <h:panelGrid columns="1" style="width: 40%; height: 40%; display:block; margin:auto;">
                         <h:messages globalOnly="true" style="text-align: center;"/>
-                        <h:outputText value="Usuario:" style="text-align: center;"/>
-                        <p:inputText value="#{ctrLuffy.usuario}"
-                                     style="text-align: center;"
-                                     size="30"/>
-                        <h:outputText value="Contraseña:" style="text-align: center;"/>
-                        <p:inputText value="#{ctrLuffy.pass}"
-                                     style="text-align: center;"
-                                     size="30"/>
+                        <h:outputText value="FUNCIONA CORRECTAMENTE" style="text-align: center;"/>
 
                         <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
-                        <p:commandButton value="INGRESAR" actionListener="#{ctrLuffy.login()}"  update="formPrincipal"/>
-                        <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
-                        <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
-                        <p:commandButton value="REGISTRARSE" actionListener="#{ctrLuffy.irRegistro()}"  update="formPrincipal"/>
+                        <p:commandButton value="VOLVER" actionListener="#{ctrLuffy.volver()}"  update="formPrincipal"/>
                     </h:panelGrid>
                 </h:form>
             </p:panel> 

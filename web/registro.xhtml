@@ -19,7 +19,14 @@
                 <h:form id="formPrincipal" style="text-align: center; margin-left: 12%">
 
                     <h:panelGrid columns="1" style="width: 40%; height: 40%; display:block; margin:auto;">
+                        <h:outputText value="REGISTRARSE" style="text-align: center;"/>
+                        <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
+                        <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
                         <h:messages globalOnly="true" style="text-align: center;"/>
+                        <h:outputText value="Correo:" style="text-align: center;"/>
+                        <p:inputText value="#{ctrLuffy.correo}"
+                                     style="text-align: center;"
+                                     size="30"/>
                         <h:outputText value="Usuario:" style="text-align: center;"/>
                         <p:inputText value="#{ctrLuffy.usuario}"
                                      style="text-align: center;"
@@ -30,10 +37,9 @@
                                      size="30"/>
 
                         <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
-                        <p:commandButton value="INGRESAR" actionListener="#{ctrLuffy.login()}"  update="formPrincipal"/>
+                        <p:commandButton value="REGISTRASE" actionListener="#{ctrLuffy.registrarse()}"  update="formPrincipal"/>
                         <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
-                        <div style="display:block; width:100%; height:40px; overflow:hidden;"/>
-                        <p:commandButton value="REGISTRARSE" actionListener="#{ctrLuffy.irRegistro()}"  update="formPrincipal"/>
+                        <p:commandButton value="VOLVER" actionListener="#{ctrLuffy.volver()}"  update="formPrincipal"/>
                     </h:panelGrid>
                 </h:form>
             </p:panel> 
